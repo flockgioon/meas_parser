@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-
 #define MP_SYNC0 0xAAu
 #define MP_SYNC1 0x55u
 #define MP_VERSION 1u
