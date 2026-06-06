@@ -23,21 +23,21 @@ mp_result_t mp_frame_parse(const uint8_t *buf, size_t buf_len, mp_frame_t *out) 
     uint8_t msg_type = buf[3];
     uint16_t seq = big_endian_uint16(&buf[4]);
     uint16_t payload_len = big_endian_uint16(&buf[6]);
-    size_t total_len = 8 /* header len */ + payload_len + 2;
+    size_t total_len = MP_HEADER_LEN + payload_len + MP_CRC_LEN;
 
     // version check
     if (version != MP_VERSION) {
         return MP_RESULT_ERROR_VERSION;
     }
 
-    // buffer len check
-    if (buf_len < total_len) {
-        return MP_RESULT_NEED_MORE_DATA;
-    }
-
     // payload len check
     if (payload_len > MP_MAX_PAYLOAD) {
         return MP_RESULT_ERROR_LENGTH;
+    }
+
+    // buffer len check
+    if (buf_len < total_len) {
+        return MP_RESULT_NEED_MORE_DATA;
     }
 
     // crc check

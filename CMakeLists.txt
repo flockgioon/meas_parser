@@ -19,6 +19,7 @@ target_compile_options(project_warning
 add_library(core STATIC
     src/big_endian.c
     src/crc.c
+    src/mp_frame.c
 )
 target_include_directories(core
     PUBLIC
@@ -74,4 +75,5 @@ endfunction()
 if (BUILD_TESTING)
     add_test_helper(test_big_endian)
     add_test_helper(test_crc)
+    add_test_helper(test_mp_frame)
 endif()
