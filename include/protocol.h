@@ -24,4 +24,5 @@ typedef enum {
     MP_RESULT_ERROR_CRC,
     MP_RESULT_ERROR_PAYLOAD,
     MP_RESULT_ERROR_IO,
+    MP_RESULT_ERROR_INVALID_ARGS,
 } mp_result_t;
