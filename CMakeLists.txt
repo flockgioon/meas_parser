@@ -21,6 +21,7 @@ add_library(core STATIC
     src/crc.c
     src/mp_frame.c
     src/mp_parser.c
+    src/mp_decode.c
 )
 target_include_directories(core
     PUBLIC
