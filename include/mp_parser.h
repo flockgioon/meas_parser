@@ -1,3 +1,4 @@
+#pragma once
 
 #include "mp_frame.h"
 #include "protocol.h"
