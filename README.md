@@ -69,5 +69,5 @@ ctest --output-on-failure
 
 ## TODO
 
-- [ ] 完成 `main.c` 的實際應用邏輯
-- [ ] 完成完整功能開發
+- [ ] Logger + 讀檔 + 模擬器，串起完整 pipeline
+- [ ] TCP socket + 函式指標，讓 parser 從網路即時讀取資料
