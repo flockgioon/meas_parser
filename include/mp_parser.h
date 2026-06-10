@@ -12,10 +12,8 @@ typedef struct {
 
 void mp_parser_init(mp_parser_t *p);
 
-// append new bytes to parser's buffer
 // 新增 new bytes 到 parser 的 buffer
 // return: 實際加入到 parser 的 buffer 的量
-// return: actual size append to parser's buffer
 size_t mp_parser_feed(mp_parser_t *p, const uint8_t *bytes, size_t n);
 
 // 嘗試從 parser 中取出一個 valid frame 並消耗
