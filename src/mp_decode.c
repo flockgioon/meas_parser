@@ -30,7 +30,7 @@ mp_result_t mp_decode_measurement(mp_frame_t *f, mp_measurement_t *out) {
         out->readings[i] = (mp_reading_t){
             .channel_id = f->payload[base],
             .unit = f->payload[base + 1],
-            .value_mili = (int32_t)big_endian_uint32(&f->payload[base + 2]),
+            .value_milli = (int32_t)big_endian_uint32(&f->payload[base + 2]),
         };
     }
     return MP_RESULT_OK;

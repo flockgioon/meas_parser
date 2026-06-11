@@ -38,7 +38,7 @@ static size_t build_measure_payload(
 
         out[base] = reading.channel_id;
         out[base + 1] = reading.unit;
-        big_endian_write_uint32(&out[base + 2], (uint32_t)reading.value_mili);
+        big_endian_write_uint32(&out[base + 2], (uint32_t)reading.value_milli);
     }
     return 5 + 6 * channel_count;
 }
@@ -49,7 +49,7 @@ static void test_one_channel(void) {
         {
             .channel_id = 5,
             .unit = MP_UNIT_VOLT,
-            .value_mili = 12500,
+            .value_milli = 12500,
         },
     };
     size_t payload_len = build_measure_payload(1000, 1, reading, buf);
@@ -65,7 +65,7 @@ static void test_one_channel(void) {
     assert(m.channel_count == 1);
     assert(m.readings[0].channel_id == 5);
     assert(m.readings[0].unit == MP_UNIT_VOLT);
-    assert(m.readings[0].value_mili == 12500);
+    assert(m.readings[0].value_milli == 12500);
 }
 
 static void test_two_channel(void) {
@@ -75,12 +75,12 @@ static void test_two_channel(void) {
         {
             .channel_id = 1,
             .unit = MP_UNIT_VOLT,
-            .value_mili = 5000,
+            .value_milli = 5000,
         },
         {
             .channel_id = 2,
             .unit = MP_UNIT_CELSIUS,
-            .value_mili = -3200,
+            .value_milli = -3200,
         },
     };
     size_t payload_len = build_measure_payload(2000, 2, reading, buf);
@@ -97,11 +97,11 @@ static void test_two_channel(void) {
 
     assert(m.readings[0].channel_id == 1);
     assert(m.readings[0].unit == MP_UNIT_VOLT);
-    assert(m.readings[0].value_mili == 5000);
+    assert(m.readings[0].value_milli == 5000);
 
     assert(m.readings[1].channel_id == 2);
     assert(m.readings[1].unit == MP_UNIT_CELSIUS);
-    assert(m.readings[1].value_mili == -3200);
+    assert(m.readings[1].value_milli == -3200);
 }
 
 static void test_zero_channel(void) {
@@ -140,7 +140,7 @@ static void test_payload_len_and_channel_not_fit(void) {
         {
             .channel_id = 1,
             .unit = MP_UNIT_VOLT,
-            .value_mili = 5000,
+            .value_milli = 5000,
         },
     };
     size_t payload_len = build_measure_payload(5000, 1, readings, buf);

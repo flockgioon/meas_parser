@@ -27,7 +27,7 @@ enum {
 typedef struct {
     uint8_t channel_id;
     mp_unit_t unit;
-    int32_t value_mili;
+    int32_t value_milli;
 } mp_reading_t;
 
 typedef struct {
