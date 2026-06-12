@@ -52,6 +52,20 @@ target_compile_features(meas_parser
         c_std_11
 )
 
+# executable: simu
+add_executable(simu
+    tools/instrument_simulator.c
+)
+target_link_libraries(simu
+    PRIVATE
+        project_warning
+        core
+)
+target_compile_features(simu
+    PRIVATE
+        c_std_11
+)
+
 # test
 include(CTest)
 
