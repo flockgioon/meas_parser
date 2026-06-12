@@ -120,6 +120,31 @@ static void write_ack_frame(FILE *f) {
     fwrite(frame, 1, frame_len, f);
 }
 
+static void write_valid_measure_frame_with_3_channel(FILE *f) {
+    mp_reading_t readings[] = {
+        (mp_reading_t){
+            .channel_id = 11,
+            .unit = MP_UNIT_VOLT,
+            .value_milli = 24800,
+        },
+        (mp_reading_t){
+            .channel_id = 12,
+            .unit = MP_UNIT_CELSIUS,
+            .value_milli = -86400,
+        },
+        (mp_reading_t){
+            .channel_id = 13,
+            .unit = MP_UNIT_AMP,
+            .value_milli = -50,
+        },
+    };
+    uint8_t payload[128] = {0};
+    uint8_t frame[256] = {0};
+    size_t payload_len = build_measure_payload(36000000, 3, readings, payload);
+    size_t frame_len = build_frame(MP_MSG_TYPE_MEASURE, 555, payload, (uint16_t)payload_len, frame);
+    fwrite(frame, 1, frame_len, f);
+}
+
 int main(void) {
     const char *FILENAME = "test_data.bin";
     FILE *f = NULL;
@@ -134,6 +159,7 @@ int main(void) {
     write_valid_measure_frame_with_1_channel(f);
     write_bad_crc(f);
     write_ack_frame(f);
+    write_valid_measure_frame_with_3_channel(f);
 
     fclose(f);
     printf("wrote %s\n", FILENAME);
