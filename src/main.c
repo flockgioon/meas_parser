@@ -8,8 +8,11 @@
 #include "mp_log.h"
 #include "mp_parser.h"
 #include "protocol.h"
+#include "portable.h"
 
 #define MP_RESULT_INIT 999
+
+
 
 static const char *mp_unit_to_string(mp_unit_t unit) {
     switch (unit) {
@@ -65,7 +68,7 @@ int main(int argc, char *argv[]) {
 
     // read file
     FILE *file = NULL;
-    errno_t err = fopen_s(&file, argv[1], "rb");
+    int err = portable_fopen(&file, argv[1], "rb");
     if (err != 0) {
         fprintf(stderr, "failed to fopen_s: %d\n", err);
         return 1;
