@@ -12,8 +12,6 @@
 
 #define MP_RESULT_INIT 999
 
-
-
 static const char *mp_unit_to_string(mp_unit_t unit) {
     switch (unit) {
     case MP_UNIT_VOLT:
