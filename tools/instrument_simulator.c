@@ -8,6 +8,7 @@
 #include "crc.h"
 #include "mp_decode.h"
 #include "protocol.h"
+#include "portable.h"
 
 static size_t build_frame(
     mp_msg_type_t msg_type,
@@ -50,7 +51,7 @@ static size_t build_measure_payload(
         out[base + 1] = reading.unit;
         big_endian_write_uint32(&out[base + 2], (uint32_t)reading.value_milli);
     }
-    return 5 + 6 * channel_count;
+    return (size_t)(5 + 6 * channel_count);
 }
 
 static void write_junk(FILE *f) {
@@ -148,7 +149,7 @@ static void write_valid_measure_frame_with_3_channel(FILE *f) {
 int main(void) {
     const char *FILENAME = "test_data.bin";
     FILE *f = NULL;
-    errno_t err = fopen_s(&f, FILENAME, "wb");
+    int err = portable_fopen(&f, FILENAME, "wb");
     if (err != 0) {
         fprintf(stderr, "failed to fopen_s: %d\n", err);
         return 1;
