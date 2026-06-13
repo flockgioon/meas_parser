@@ -40,7 +40,7 @@ static size_t build_measure_payload(
         out[base + 1] = reading.unit;
         big_endian_write_uint32(&out[base + 2], (uint32_t)reading.value_milli);
     }
-    return 5 + 6 * channel_count;
+    return (size_t)(5 + 6 * channel_count);
 }
 
 static void test_one_channel(void) {
