@@ -9,6 +9,6 @@ int portable_fopen(FILE **file, const char *filepath, const char *mode) {
     return (int)fopen_s(file, filepath, mode);
 #else
     *file = fopen(filepath, mode);
-    return file == NULL ? errno : 0;
+    return *file == NULL ? errno : 0;
 #endif
 }
