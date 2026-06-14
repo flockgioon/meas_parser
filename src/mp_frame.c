@@ -40,7 +40,9 @@ mp_result_t mp_frame_parse(const uint8_t *buf, size_t buf_len, mp_frame_t *out) 
         return MP_RESULT_NEED_MORE_DATA;
     }
 
-    // crc check
+    // crc check    
+    out->seq = seq; // write earlier
+
     uint16_t crc = big_endian_uint16(&buf[8 + payload_len]);
     uint16_t crc_prime = crc_crc16_ccitt_false(&buf[2], 6 + payload_len);
     if (crc != crc_prime) {
@@ -50,7 +52,7 @@ mp_result_t mp_frame_parse(const uint8_t *buf, size_t buf_len, mp_frame_t *out) 
     // ok
     out->version = version;
     out->msg_type = msg_type;
-    out->seq = seq;
+    // out->seq = seq;
     out->payload_len = payload_len;
     out->crc = crc;
     memcpy(out->payload, &buf[8], payload_len);
