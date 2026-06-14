@@ -24,6 +24,7 @@ add_library(core STATIC
     src/mp_decode.c
     src/mp_log.c
     src/portable.c
+    src/build_helper.c
 )
 target_include_directories(core
     PUBLIC

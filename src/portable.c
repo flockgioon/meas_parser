@@ -1,3 +1,7 @@
+#ifndef _MSC_VER
+#include <errno.h>
+#endif
+
 #include "portable.h"
 
 int portable_fopen(FILE **file, const char *filepath, const char *mode) {

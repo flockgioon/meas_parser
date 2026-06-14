@@ -2,46 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "big_endian.h"
 #include "mp_decode.h"
 #include "mp_frame.h"
 #include "protocol.h"
-
-static void make_measure_frame(const uint8_t *payload, uint16_t payload_len, mp_frame_t *out) {
-    if (payload == NULL || out == NULL) {
-        return;
-    }
-    out->version = MP_VERSION;
-    out->msg_type = MP_MSG_TYPE_MEASURE;
-    out->seq = 0;
-    out->payload_len = payload_len;
-    memcpy(out->payload, payload, payload_len);
-
-    // crc 已於 parser 階段檢驗過, decode 階段略過
-    out->crc = 0;
-}
-
-static size_t build_measure_payload(
-    uint32_t timestamp,
-    uint8_t channel_count,
-    const mp_reading_t *readings,
-    uint8_t *out
-) {
-    big_endian_write_uint32(out, timestamp);
-    out[4] = channel_count;
-
-    mp_reading_t reading = {0};
-
-    for (size_t i = 0; i < channel_count; i++) {
-        size_t base = 5 + 6 * i;
-        reading = readings[i];
-
-        out[base] = reading.channel_id;
-        out[base + 1] = reading.unit;
-        big_endian_write_uint32(&out[base + 2], (uint32_t)reading.value_milli);
-    }
-    return (size_t)(5 + 6 * channel_count);
-}
+#include "build_helper.h"
 
 static void test_one_channel(void) {
     uint8_t buf[256] = {0};

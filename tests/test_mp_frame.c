@@ -4,33 +4,9 @@
 #include <string.h>
 
 #include "big_endian.h"
-#include "crc.h"
 #include "mp_frame.h"
 #include "protocol.h"
-/*
- * return: buffer total len
- */
-static size_t build_frame(
-    mp_msg_type_t msg_type,
-    uint16_t seq,
-    const uint8_t *payload,
-    uint16_t payload_len,
-    uint8_t *out_buf
-) {
-    out_buf[0] = MP_SYNC0;
-    out_buf[1] = MP_SYNC1;
-    out_buf[2] = MP_VERSION;
-    out_buf[3] = (uint8_t)msg_type;
-    big_endian_write_uint16(&out_buf[4], seq);
-    big_endian_write_uint16(&out_buf[6], payload_len);
-    if (payload_len > 0) {
-        memcpy(&out_buf[8], payload, payload_len);
-    }
-    uint16_t crc = crc_crc16_ccitt_false(&out_buf[2], 6 + payload_len);
-    big_endian_write_uint16(&out_buf[MP_HEADER_LEN + payload_len], crc);
-
-    return (size_t)(MP_HEADER_LEN + payload_len + MP_CRC_LEN);
-}
+#include "build_helper.h"
 
 #define MP_RESULT_ERROR_FOR_TEST_INIT ((mp_result_t) - 999)
 
