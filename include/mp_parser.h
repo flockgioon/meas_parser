@@ -6,8 +6,8 @@
 #define MP_PARSER_BUF_SIZE (MP_HEADER_LEN + MP_MAX_PAYLOAD + MP_CRC_LEN + 256)
 
 typedef struct {
-    uint8_t data[MP_PARSER_BUF_SIZE];
-    size_t len;
+  uint8_t data[MP_PARSER_BUF_SIZE];
+  size_t len;
 } mp_parser_t;
 
 void mp_parser_init(mp_parser_t *p);

@@ -5,9 +5,9 @@
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
+#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <windows.h>
 
 typedef SOCKET mp_socket_t;
 #define MP_INVALID_SOCKET INVALID_SOCKET
@@ -21,14 +21,12 @@ typedef SSIZE_T ssize_t;
 #endif
 
 static inline int mp_net_init(void) {
-    WSADATA wsa;
-    return WSAStartup(MAKEWORD(2, 2), &wsa);
+  WSADATA wsa;
+  return WSAStartup(MAKEWORD(2, 2), &wsa);
 }
-static inline void mp_net_cleanup(void) {
-    WSACleanup();
-}
+static inline void mp_net_cleanup(void) { WSACleanup(); }
 static inline void mp_print_socket_error(const char *msg) {
-    fprintf(stderr, "%s: error %d\n", msg, WSAGetLastError());
+  fprintf(stderr, "%s: error %d\n", msg, WSAGetLastError());
 }
 
 #else
@@ -45,7 +43,5 @@ typedef int mp_socket_t;
 
 static inline int mp_net_init(void) { return 0; }
 static inline void mp_net_cleanup(void) {}
-static inline void mp_print_socket_error(const char *msg) {
-    perror(msg);
-}
+static inline void mp_print_socket_error(const char *msg) { perror(msg); }
 #endif
