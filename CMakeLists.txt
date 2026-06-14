@@ -67,6 +67,20 @@ target_compile_features(simu
         c_std_11
 )
 
+# executable: tcp_simu
+add_executable(tcp_simu
+    tools/tcp_simulator.c
+)
+target_link_libraries(tcp_simu
+    PRIVATE
+        project_warning
+        core
+)
+target_compile_features(tcp_simu
+    PRIVATE
+        c_std_11
+)
+
 # test
 include(CTest)
 
