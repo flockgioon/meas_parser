@@ -6,13 +6,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_library(project_warning INTERFACE)
 target_compile_options(project_warning
     INTERFACE
-        -Wall
-        -Wextra
-        -Wpedantic
-        -Werror
-        -Wshadow
-        -Wconversion
-        -Wmissing-prototypes
+        $<$<C_COMPILER_ID:GNU,Clang>:-Wall;-Wextra;-Wpedantic;-Werror;-Wshadow;-Wconversion;-Wmissing-prototypes>
+        $<$<C_COMPILER_ID:MSVC>:/W4;/WX>
 )
 
 # lib: core
@@ -53,6 +48,9 @@ target_compile_features(meas_parser
     PRIVATE
         c_std_11
 )
+if (WIN32)
+    target_link_libraries(meas_parser PRIVATE ws2_32)
+endif()
 
 # executable: simu
 add_executable(simu
@@ -81,6 +79,9 @@ target_compile_features(tcp_simu
     PRIVATE
         c_std_11
 )
+if (WIN32)
+    target_link_libraries(tcp_simu PRIVATE ws2_32)
+endif()
 
 # test
 include(CTest)

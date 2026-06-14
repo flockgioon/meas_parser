@@ -3,17 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
 
 #include "mp_decode.h"
 #include "mp_frame.h"
 #include "mp_log.h"
 #include "mp_parser.h"
-#include "protocol.h"
+#include "mp_socket.h"
 #include "portable.h"
+#include "protocol.h"
 
 #define MP_RESULT_INIT 999
 
@@ -24,6 +21,11 @@ static int process_file(const char *filename);
 static int process_tcp(const char *host, uint16_t port);
 
 int main(int argc, char *argv[]) {
+    if (mp_net_init() != 0) {
+        fprintf(stderr, "network init failed\n");
+        return 1;
+    }
+
     // usage:
     //     ./meas_parser <file.bin>
     //     ./meas_parser --tcp <host> <port>
@@ -45,7 +47,7 @@ int main(int argc, char *argv[]) {
         uint16_t port = (uint16_t)strtol(argv[3], &end, 10);
         if (*end != '\0') {
             fprintf(stderr, "port should be a number");
-            return 1;   
+            return 1;
         }
         return process_tcp(host, port);
     }
@@ -147,9 +149,9 @@ static int process_file(const char *filename) {
 
 static int process_tcp(const char *host, uint16_t port) {
     // socket
-    int fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (fd < 0) {
-        perror("failed to socket");
+    mp_socket_t fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (fd == MP_INVALID_SOCKET) {
+        mp_print_socket_error("failed to socket");
         return 1;
     }
 
@@ -157,12 +159,17 @@ static int process_tcp(const char *host, uint16_t port) {
     struct sockaddr_in addr = {0};
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = inet_addr(host);
+    if (inet_pton(AF_INET, host, &addr.sin_addr) != 1) {
+        fprintf(stderr, "invalid  address: %s\n", host);
+        mp_socket_close(fd);
+        return 1;
+    }
 
     // connect
     int ret = connect(fd, (struct sockaddr *)&addr, sizeof(addr));
     if (ret < 0) {
-        perror("failed to connect");
+        mp_print_socket_error("failed to connect");
+        mp_socket_close(fd);
         return 1;
     }
     printf("connected to %s:%u\n", host, port);
@@ -180,7 +187,7 @@ static int process_tcp(const char *host, uint16_t port) {
     uint8_t buf[256] = {0};
 
     while (1) {
-        n = recv(fd, buf, sizeof(buf), 0);
+        n = recv((mp_socket_t)fd, (char *)buf, sizeof(buf), 0);
         if (n <= 0) {
             break;
         }
@@ -188,6 +195,8 @@ static int process_tcp(const char *host, uint16_t port) {
     }
 
     // close
-    close(fd);
+    mp_socket_close(fd);
+    mp_net_cleanup();
+    printf("frame_ok: %zu, frames_err: %zu, resync_count: %zu\n", frames_ok, frames_err, resync_count);
     return 0;
 }
